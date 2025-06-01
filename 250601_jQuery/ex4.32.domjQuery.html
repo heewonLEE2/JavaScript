@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>domjQuery 실습 4</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+      $(function () {
+        // 기존, 메인 데이터 저장 할 배열
+        const mainArr = [
+          { num: 1, name: '홍길동', kor: 100, eng: 90, math: 80 },
+          { num: 2, name: '강감찬', kor: 90, eng: 80, math: 70 },
+          { num: 3, name: '이순신', kor: 80, eng: 70, math: 60 },
+        ];
+        // 정렬할때 사용 할 함수
+        let mainArrSort = 'asc';
+        // 과목별 합계 스코어 및 모든 과목을 합친 합계
+        let sumScoreArr = [0, 0, 0, 0];
+
+        // 실행하면 과목 합계를 계산해서 sumScoreArr에 값을 저장
+        const sumScoreFunc = () => {
+          for (const ele of mainArr) {
+            sumScoreArr[0] += +ele.kor;
+            sumScoreArr[1] += +ele.eng;
+            sumScoreArr[2] += +ele.math;
+          }
+          sumScoreArr[3] = sumScoreArr[0] + sumScoreArr[1] + sumScoreArr[2];
+        };
+
+        // 저장된 데이터에 반복문을 이용해 tbody에 append()를 이용
+        const tbodyFunc = () => {
+          for (let i = 0; i < mainArr.length; i++) {
+            $('tbody').append(`
+              <tr>
+              <td>${mainArr[i].num}</td>
+              <td>${mainArr[i].name}</td>
+              <td class="score">${mainArr[i].kor}</td>
+              <td class="score">${mainArr[i].eng}</td>
+              <td class="score">${mainArr[i].math}</td>
+              <td class="score">${
+                mainArr[i].kor + mainArr[i].eng + mainArr[i].math
+              }</td>
+              <td><button data-num='${
+                mainArr[i].num
+              }' class="delBtn">삭제</button></td>
+              </tr>
+              `);
+          }
+          // tbody 생성을 실행할때 마다 과목합계를 계산하겠금 설계
+          sumScoreFunc();
+          // 버튼 생성하고 버튼 마다 클릭 eventTarget을 아래 삭제 함수 파라미터에 전달
+          for (const btn of $('.delBtn')) {
+            btn.addEventListener('click', (e) => {
+              delData(e);
+            });
+          }
+        };
+
+        // tfood을 추가하는 함수
+        const tfoodFunc = () => {
+          $('tfoot').children().remove();
+          $('tfoot').append(`
+              <tr>
+              <th colspan='2'>과목합계</th>
+              <td class='score'>${sumScoreArr[0]}</td>
+              <td class='score'>${sumScoreArr[1]}</td>
+              <td class='score'>${sumScoreArr[2]}</td>
+              <td class='score'>${sumScoreArr[3]}</td>
+              </tr>
+              `);
+        };
+
+        // 총점출력이 없는 상태, 데이터를 추가할때 , 정렬할때 tfoot이 없으면 없는 상태 그대로
+        // 총점출력이 있으면 있는 상태로 데이터 추가, 정렬하기 위한 함수(없으면 총점이 자동 생성)
+        const tfoodState = () => {
+          if ($('tfoot').children().length < 1) {
+            initFunc();
+            tbodyFunc();
+          } else {
+            initFunc();
+            tbodyFunc();
+            tfoodFunc();
+          }
+        };
+
+        // 테이블 tbody, tfoot, 점수 합계 총 3곳을 초기화 하는 함수
+        const initFunc = () => {
+          $('tbody').children().remove();
+          $('tfoot').children().remove();
+          sumScoreArr = [0, 0, 0, 0];
+        };
+
+        // **데이터 불러오기 버튼 클릭**
+        $('#loadBtn').click((e) => {
+          // 데이터를 초기화 하고  불러올때도 항상 오름차순으로 불러오겠금
+          if (mainArrSort == 'desc') {
+            mainArrSort = 'asc';
+            mainArr.sort((a, b) => {
+              return a.num - b.num;
+            });
+          }
+          // 기존 tody 데이터 삭제 후 데이터 불러오기
+          initFunc();
+          // tbody에 데이터 추가
+          tbodyFunc();
+        }); // 데이터 불러오기 버튼 끝 라인
+
+        // **데이터 초기화 버튼 클릭**
+        $('#initBtn').click((e) => {
+          initFunc();
+          // 데이터 초기화 할때 정렬도 오름차순으로 초기화
+        }); // 데이터 초기화 버튼 끝 라인
+
+        // **데이터 총점합계 버튼 클릭**
+        $('#sumBtn').click((e) => {
+          // 불러오기를 먼저 실행해야 총점확인을 가능하게 하는 조건문
+          if (sumScoreArr[0] == 0) {
+            alert('데이터 불러오기를 먼저 실행하세요');
+            return;
+          }
+
+          // 총점 확인 tfood 함수 실행
+          tfoodFunc();
+        }); // 데이터 총점합계 버튼 끝 라인
+
+        // **데이터 정렬 버튼 클릭**
+        $('#sortBtn').click((e) => {
+          // 불러오기를 먼저 실행해야 정렬버튼 클릭 가능하게 하는 조건문
+          if (sumScoreArr[0] == 0) {
+            alert('데이터 불러오기를 먼저 실행하세요');
+            return;
+          }
+
+          // 오름차순이면 내림차순으로
+          if (mainArrSort == 'asc') {
+            mainArrSort = 'desc';
+            mainArr.sort((a, b) => {
+              return b.num - a.num;
+            });
+            // 내림차순이면 오름차순으로
+          } else if (mainArrSort == 'desc') {
+            mainArrSort = 'asc';
+            mainArr.sort((a, b) => {
+              return a.num - b.num;
+            });
+          }
+
+          // tfood 상태 유지를 하면서 tbody,tfood 추가
+          tfoodState();
+        }); // 데이터 정렬 버튼 끝 라인
+
+        // 데이터 추가 등록 버튼 클릭
+        $('#registBtn').click((e) => {
+          // 데이터 배열 안에서 num 최고값을 찾기 그걸 이용해서 데이터 추가할때
+          // num을 있는 번호중 최고로 넣어줄거다.
+          let arrMaxValue = Math.max(
+            ...mainArr.map((ele) => {
+              return ele.num;
+            })
+          );
+
+          // input에 적은 value 값들을 기존 배열에 추가하기 위해 객체로 저장
+          const inputVal = {
+            num: arrMaxValue + 1,
+            name: $('#name').val(),
+            kor: +$('#kor').val(),
+            eng: +$('#eng').val(),
+            math: +$('#math').val(),
+          };
+
+          // 기존 배열에 push
+          mainArr.push(inputVal);
+
+          // tfood 상태 유지 여부에 대한 함수
+          tfoodState();
+
+          // 등록하면 input 값들 초기화
+          for (const ele of $('input')) {
+            ele.value = '';
+          }
+        }); // 데이터 등록 버튼 끝 라인
+
+        // **데이터 삭제 버튼 클릭 함수**
+        const delData = (e) => {
+          const delDataNum = e.target.dataset.num;
+          const delNumIndex = mainArr.findIndex((ele) => ele.num == delDataNum);
+
+          mainArr.splice(delNumIndex, 1);
+          tfoodState();
+          //   e.target.parentElement.parentElement.remove();
+          // mainArr 에서 데이터 삭제하기
+        };
+      }); // function({}) 라인
+    </script>
+    <style>
+      table {
+        width: 800px;
+      }
+      caption {
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #333;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        width: 120px;
+        font-size: 1.2em;
+      }
+      th {
+        background-color: #333;
+        color: #fff;
+      }
+      td {
+        text-align: center;
+      }
+      td.score {
+        text-align: right;
+        padding-right: 20px;
+      }
+      p {
+        width: 800px;
+        text-align: center;
+      }
+      p.bgGray {
+        background-color: #eee;
+        padding: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <caption>
+        성적표
+      </caption>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>성명</th>
+          <th>국어</th>
+          <th>영어</th>
+          <th>수학</th>
+          <th>개인총점</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </table>
+    <p class="bgGray">
+      성명&nbsp;<input id="name" type="text" size="10" />&nbsp;&nbsp;
+      국어&nbsp;<input id="kor" type="text" size="3" />&nbsp;&nbsp;
+      영어&nbsp;<input id="eng" type="text" size="3" />&nbsp;&nbsp;
+      수학&nbsp;<input id="math" type="text" size="3" />&nbsp;&nbsp;
+      <button id="registBtn">등록</button>
+    </p>
+    <p>
+      <button id="initBtn">데이터초기화</button>&nbsp;
+      <button id="loadBtn">데이터불러오기</button>
+      <button id="sumBtn">총점출력</button>
+      <button id="sortBtn">번호순정렬</button>
+    </p>
+  </body>
+</html>

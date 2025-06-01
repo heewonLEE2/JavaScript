@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>domjQuery 실습 1</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+      $(function () {
+        let count = 0;
+
+        // add 버튼을 클릭하면 count가 1씩 증가하면서 증가한 카운트를 컨텐츠로 갖은 li요소를 #list 마지막 요소로 추가
+        $('#add').click((e) => {
+          count += 1;
+          $('#list').append(`<li>${count}</li>`);
+        });
+
+        // remove 버튼을 클릭하면 count가 0보다 이상일때만 1개씩 감소하면서 li요소중 마지막을 삭제
+        $('#remove').click((e) => {
+          if (count > 0) {
+            count -= 1;
+            $('li').last().remove();
+          }
+        });
+
+        // count를 0으로 초기화 하고 #list의 모든 자식을 제거
+        $('#init').click((e) => {
+          count = 0;
+          $('#list').children().remove();
+        });
+
+        // selRemove 버튼을 클릭하면 #txt의 value 값과 같은 textContent를 가진 li를 삭제
+        $('#selRemove').click((e) => {
+          // 선택한 value 값을 변수에 할당
+          const selNum = $('#txt').val();
+          console.log($('li'));
+
+          // li 요소들을 중 선택한 요소와 같은 textContent를 찾아 삭제
+          for (const ele of $('li')) {
+            if (ele.textContent == selNum) {
+              ele.remove();
+            }
+          }
+        });
+      }); // $(function(){}) 라인 끝
+    </script>
+  </head>
+  <body>
+    <ul id="list"></ul>
+    <p>
+      <button id="add">추가</button>
+      <button id="remove">삭제</button>
+      <button id="init">초기화</button>
+    </p>
+    <p>
+      <input id="txt" type="text" size="2" />&nbsp;
+      <button id="selRemove">번호선택 삭제</button>
+    </p>
+  </body>
+</html>
