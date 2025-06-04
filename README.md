@@ -1,1 +1,1 @@
-# my_mini_project
+# JavaScript 연습, 강의
