@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>domjQuery 실습 3</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+      $(function () {
+        // 버튼을 클릭 했을때 e target content에 따라 조건을 작성
+        $('button').click((e) => {
+          // div, 너비, 높이 변수에 할당
+          const divBox = $('div');
+          const divWidth = divBox.width();
+          const divHeight = divBox.height();
+
+          switch (e.target.textContent) {
+            // 배경색 blue 로 바꾸기
+            case '배경색blue':
+              divBox.css('background-color', 'blue');
+              break;
+            // 배경색 red 로 바꾸기
+            case '배경색red':
+              divBox.css('background-color', 'red');
+              break;
+
+            // div 크기, 높이를 가져와서 2배 늘리기
+            case '크기X2':
+              divBox.css('width', `${divWidth * 2}px`);
+              divBox.css('height', `${divHeight * 2}px`);
+              break;
+
+            // div 크기, 높이를 가져와서 2배 줄이기
+            case '크기/2':
+              divBox.css('width', `${divWidth / 2}px`);
+              divBox.css('height', `${divHeight / 2}px`);
+              break;
+
+            // div 에 기존 red 클래스가 있으면 삭제하고, 배경색도 초기화 후, blue 클래스 추가
+            case 'blue클래스':
+              divBox.removeClass('red');
+              divBox.css('background-color', '');
+              divBox.addClass('blue');
+              break;
+
+            // div 에 기존 blue 클래스가 있으면 삭제하고, 배경색도 초기화 후, red 클래스 추가
+            case 'red클래스':
+              divBox.removeClass('blue');
+              divBox.css('background-color', '');
+              divBox.addClass('red');
+              break;
+          }
+        });
+      }); //$(function({})) 라인
+    </script>
+
+    <style>
+      div {
+        width: 100px;
+        height: 100px;
+        background-color: yellow;
+        border: 1px solid #000;
+      }
+      .blue {
+        background-color: blue;
+      }
+      .red {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+    <p>
+      <button>배경색blue</button>
+      <button>배경색red</button>
+      <button>크기X2</button>
+      <button>크기/2</button>
+      <button>blue클래스</button>
+      <button>red클래스</button>
+    </p>
+  </body>
+</html>
