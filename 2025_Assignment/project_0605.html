@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Racing Game</title>
+    <link rel="stylesheet" href="project_0605.css" />
+  </head>
+  <body>
+    <header>- RACING GAME -</header>
+
+    <main>
+      <div class="track">
+        <div class="lane" id="lane1">
+          <img src="assets/hourse.gif" class="horse" alt="말1" />
+        </div>
+        <div class="lane" id="lane2">
+          <img src="assets/hourse.gif" class="horse" alt="말2" />
+        </div>
+        <div class="lane" id="lane3">
+          <img src="assets/hourse.gif" class="horse" alt="말3" />
+        </div>
+        <div class="lane" id="lane4">
+          <img src="assets/hourse.gif" class="horse" alt="나" />
+        </div>
+      </div>
+
+      <div class="ranking">
+        <span>1등 : 3레인</span>
+        <span>2등 : 2레인</span>
+        <span>3등 : 1레인</span>
+        <span>4등 : 4레인</span>
+      </div>
+
+      <div class="controls">
+        <button id="reset">RESET</button>
+        <select id="difficulty">
+          <option value="easy">EASY</option>
+          <option value="normal">NORMAL</option>
+          <option value="hard">HARD</option>
+        </select>
+        <button id="start">START</button>
+      </div>
+    </main>
+  </body>
+</html>

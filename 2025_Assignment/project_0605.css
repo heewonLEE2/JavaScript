@@ -1,0 +1,81 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #87ceeb;
+}
+
+main {
+  background-image: url(assets/background.jpg);
+}
+
+header {
+  background-color: orange;
+  text-align: center;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.track {
+  margin: 20px auto;
+  width: 90%;
+}
+
+.lane {
+  background-color: #deb887;
+  margin: 15px 0;
+  height: 80px;
+  position: relative;
+  border: 3px solid #a0522d;
+}
+
+.horse {
+  height: 60px;
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
+.ranking {
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 18px;
+}
+
+.ranking span {
+  margin: 0 10px;
+}
+
+.controls {
+  background-color: black;
+  text-align: center;
+  padding: 15px;
+}
+
+button {
+  background-color: yellow;
+  border: none;
+  padding: 8px 16px;
+  margin: 0 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+select {
+  padding: 8px;
+  font-weight: bold;
+  margin: 0 8px;
+}
+
+footer {
+  background-color: #add8e6;
+  text-align: center;
+  padding: 10px;
+}
