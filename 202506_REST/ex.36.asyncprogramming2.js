@@ -55,7 +55,7 @@ $(function () {
       xhr.open("DELETE", `http://localhost:7777/todos/${deleteId}`);
       xhr.send();
       xhr.onload = () => {
-        alert("삭제가 완료되었습니다.");
+        alert("삭제가 완료되었습니다..");
         $("tbody").children().remove();
       };
     });
