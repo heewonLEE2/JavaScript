@@ -1,10 +1,12 @@
 $(function () {
   // 말 img 가져오기
-  const myHorse = $("#myHorse");
-  const num1Horse = $("#lane1_Horse");
-  const num2Horse = $("#lane2_Horse");
-  const num3Horse = $("#lane3_Horse");
+  const myHorse = $('#myHorse');
+  const num1Horse = $('#lane1_Horse');
+  const num2Horse = $('#lane2_Horse');
+  const num3Horse = $('#lane3_Horse');
 
+  // 트랙 요소 가져오기 (클래스명 track)
+  const track = $('.track');
   // 전체 경기 시작,종료 시점
   let raceStart = false;
 
@@ -13,16 +15,21 @@ $(function () {
   // interval() 을 종료하지 못한 부분까지는 생각했는데 그 부분 해결방법을 찾다가 못 찾음
   let isGameOver = false;
 
-  // 랭킹 박스 가져오기 함수
-  const rankingCreate = (ranking_1, ranking_2, ranking_3, ranking_4) => {
-    $("#rankingBox").children().remove();
-    $("#rankingBox").append(`
-        <span id="ranking_1">★★★1등 : ${ranking_1}번 레인★★★</span>
-        <span id="ranking_2">2등 : ${ranking_2}번 레인</span>
-        <span id="ranking_3">3등 : ${ranking_3}번레인</span>
-        <span id="ranking_4">4등 : ${ranking_4}번 레인</span>
-        `);
+  // 도착선 계산 함수 (트랙의 width - 말의 width) 고정 px로 하면 해상도가 다른 환경마다 다르게 작동해서 상대적으로 바꿈!
+  const getFinishLine = () => {
+    return track.width() - myHorse.width();
   };
+
+  // 랭킹 박스 가져오기 함수 ( 함수로 호출 하려고 하니 내가 조종하는 말이 끝날때 생성이 안된다. 2시간 동안 계속 시도한듯 결국 종료함수 안에서 span이 생성되겠금 넣었다.)
+  // const rankingCreate = (ranking_1, ranking_2, ranking_3, ranking_4) => {
+  //   $('#rankingBox').empty();
+  //   $('#rankingBox').append(`
+  //       <span id="ranking_1">★★★1등 : ${ranking_1}번 레인★★★</span>
+  //       <span id="ranking_2">2등 : ${ranking_2}번 레인</span>
+  //       <span id="ranking_3">3등 : ${ranking_3}번레인</span>
+  //       <span id="ranking_4">4등 : ${ranking_4}번 레인</span>
+  //       `);
+  // };
 
   // keypress 이벤트 발생시 내 말을 좌측으로 움직이기 기능 함수
   const myHorseMoveFunc = () => {
@@ -36,11 +43,13 @@ $(function () {
     const movePx = 20;
 
     // myHores 움직이기
-    myHorse.css("left", `${currentPosition + movePx}px`);
+    myHorse.css('left', `${currentPosition + movePx}px`);
 
-    // 말이 1640px 정도 까지 움직이면 끝까지 가는것 같다 그때 경기 끝
-    if (parseInt(currentPosition) > 1640 || !raceStart) {
+    // 도착선에 도달하면 경기 끝 상대적으로 바꾸기
+    if (parseInt(currentPosition) + movePx >= getFinishLine() || !raceStart) {
+      $(document).off('keyup', myHorseMoveFunc);
       stopGame();
+      return;
     }
   }; // myHorseMoveFunc() 끝 라인
 
@@ -61,15 +70,15 @@ $(function () {
       let num3CurrentPosition = num3Horse.position().left;
 
       // 모든말 움직이기
-      num1Horse.css("left", `${num1CurrentPosition + ranMove1Horse}px`);
-      num2Horse.css("left", `${num2CurrentPosition + ranMove2Horse}px`);
-      num3Horse.css("left", `${num3CurrentPosition + ranMove3Horse}px`);
+      num1Horse.css('left', `${num1CurrentPosition + ranMove1Horse}px`);
+      num2Horse.css('left', `${num2CurrentPosition + ranMove2Horse}px`);
+      num3Horse.css('left', `${num3CurrentPosition + ranMove3Horse}px`);
 
       // 경기 종료의 경우
       if (
-        parseInt(num1CurrentPosition) > 1640 ||
-        parseInt(num2CurrentPosition) > 1640 ||
-        parseInt(num3CurrentPosition) > 1640 ||
+        num1CurrentPosition + ranMove1Horse >= getFinishLine() ||
+        num2CurrentPosition + ranMove2Horse >= getFinishLine() ||
+        num3CurrentPosition + ranMove3Horse >= getFinishLine() ||
         !raceStart
       )
         stopGame();
@@ -86,7 +95,7 @@ $(function () {
     raceStart = true;
 
     // keypress 이벤트가 일어나면 myHorseMoveFunc 함수(내 말을 움직일 함수) 작동
-    $("body").on("keyup", myHorseMoveFunc);
+    $(document).on('keyup', myHorseMoveFunc);
 
     // 나를 제외한 1~3번 레인 말 움직이는 함수
     moveRaceFunc(level);
@@ -97,11 +106,10 @@ $(function () {
     if (isGameOver) return; // 이미 종료된 경우 함수 종료
     isGameOver = true;
 
+    $(document).off('keyup', myHorseMoveFunc); // 클릭이벤트 제거
     clearInterval(interval);
     // 게임 시작 변수를 false 로
     raceStart = false;
-
-    $("body").off("keyup", myHorseMoveFunc); // 클릭이벤트 제거
 
     // 랭킹을 정하기 위해 각 말들의 위치 값을 저장
     // sort() 로 비교하기 위해서 배열에 저장을 했다.
@@ -116,37 +124,37 @@ $(function () {
       return b.position - a.position;
     });
 
-    // 랭킹 박스 생성 인자로 1위인 0번 인덱스 부터의 line을 보내줌
-    rankingCreate(
-      rankNum[0].line,
-      rankNum[1].line,
-      rankNum[2].line,
-      rankNum[3].line
-    );
-    alert("경기 끝입니다.");
+    // 함수를 만들어서 호출하려니 계속 에러가 나서 종료 함수 안에 랭킹 생성을 넣었다
+    $('#rankingBox').empty();
+    $('#rankingBox').append(`
+        <span id="ranking_1">★★★1등 : ${rankNum[0].line}번 레인★★★</span>
+        <span id="ranking_2">2등 : ${rankNum[1].line}번 레인</span>
+        <span id="ranking_3">3등 : ${rankNum[2].line}번레인</span>
+        <span id="ranking_4">4등 : ${rankNum[3].line}번 레인</span>
+        `);
   };
 
   // 게임 시작 버튼 클릭
-  $("#start").click(() => {
+  $('#start').click(() => {
     // gameStart(level)에 보내줄 level 변수를 선언
     let level;
 
     // 시작 하면 시작 안내글 삭제
-    $("#rankingBox").children().remove();
+    $('#rankingBox').empty();
     // 난이도 가져오기
-    const gameLevel = $("#gameLevel").val();
+    const gameLevel = $('#gameLevel').val();
 
     // 난이도 별로 최종적으로 setInterval 함수에 전달될 level 변수에 속도 할당
     switch (gameLevel) {
-      case "easy":
+      case 'easy':
         level = 1400;
         break;
 
-      case "normal":
+      case 'normal':
         level = 800;
         break;
 
-      case "hard":
+      case 'hard':
         level = 500;
         break;
     }
@@ -160,19 +168,20 @@ $(function () {
     isGameOver = false; // 진행 변수 false
 
     clearInterval(interval);
-    $("body").off("keyup", myHorseMoveFunc); // 이벤트 제거
+    $('body').off('keyup', myHorseMoveFunc); // 이벤트 제거
 
     // 말들의 위치 초기화
-    myHorse.css("left", "0px");
-    num1Horse.css("left", "0px");
-    num2Horse.css("left", "0px");
-    num3Horse.css("left", "0px");
+    myHorse.css('left', '0px');
+    num1Horse.css('left', '0px');
+    num2Horse.css('left', '0px');
+    num3Horse.css('left', '0px');
     // reset 하면 게임 안내문 다시 표기하기
-    $("#rankingBox").html(
-      "<p>난이도를 선택하고 게임 시작 버튼을 누르세요!</p>"
+    $('#rankingBox').empty();
+    $('#rankingBox').append(
+      '<p>난이도를 선택하고 게임 시작 버튼을 누르세요!</p>'
     );
   };
 
   // reset 버튼 클릭 이벤트
-  $("#reset").click(initFunc); // reset 버튼 클릭 이벤트 라인 끝
+  $('#reset').click(initFunc); // reset 버튼 클릭 이벤트 라인 끝
 }); // function 라인 끝

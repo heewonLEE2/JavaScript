@@ -32,7 +32,7 @@ header {
   height: 60px;
   position: absolute;
   top: 10px;
-  /* left: 0px; */
+  left: 0px;
 }
 
 .ranking {
