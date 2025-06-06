@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Racing Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script defer src="project_0605.js"></script>
     <link rel="stylesheet" href="project_0605.css" />
   </head>
   <body>
@@ -12,29 +14,26 @@
     <main>
       <div class="track">
         <div class="lane" id="lane1">
-          <img src="assets/hourse.gif" class="horse" alt="말1" />
+          <img src="assets/hourse.gif" class="horse" id="lane1_Horse" />
         </div>
         <div class="lane" id="lane2">
-          <img src="assets/hourse.gif" class="horse" alt="말2" />
+          <img src="assets/hourse.gif" class="horse" id="lane2_Horse" />
         </div>
         <div class="lane" id="lane3">
-          <img src="assets/hourse.gif" class="horse" alt="말3" />
+          <img src="assets/hourse.gif" class="horse" id="lane3_Horse" />
         </div>
         <div class="lane" id="lane4">
-          <img src="assets/hourse.gif" class="horse" alt="나" />
+          <img src="assets/hourse.gif" class="horse" id="myHorse" />
         </div>
       </div>
 
-      <div class="ranking">
-        <span>1등 : 3레인</span>
-        <span>2등 : 2레인</span>
-        <span>3등 : 1레인</span>
-        <span>4등 : 4레인</span>
+      <div class="ranking" id="rankingBox">
+        <p>난이도를 선택하고 게임 시작 버튼을 누르세요!</p>
       </div>
 
       <div class="controls">
         <button id="reset">RESET</button>
-        <select id="difficulty">
+        <select id="gameLevel">
           <option value="easy">EASY</option>
           <option value="normal">NORMAL</option>
           <option value="hard">HARD</option>
